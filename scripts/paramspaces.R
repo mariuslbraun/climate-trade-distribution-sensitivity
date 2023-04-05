@@ -1,22 +1,42 @@
-# This R code generates random draws from a +-10% interval around the 
-# elasticities of substitution esubd(i) for each sector in the Pothen and
-# Huebler model (2018). It then writes these draws to a CSV file to be 
-# used as the parameter space for sensitivity analysis in Snakemake.
+# This R code generates parameter spaces for the distributional
+# sensivitity analyses of the main results of Hübler et al. (2022).
+# More specifically, 1000 random draws from a +-10% interval around 
+# each of the sector-specific elasiticity estimates are generated.
+# This results in 1000 sets of sectoral parameter values to be used
+# in a parameter sweep in Snakemake.
+#
+# A separate parameter space is generated for each of the three sets
+# of sector-specific elasticity parameters present in the model:
+# - esubd(i): elasticities between domestically produced versus
+#   imported goods
+# - esubm(i): Armington elasticities
+# - esubva(j): elasticities between production factors
 # 
-# Marius Braun, May 2022
+# Marius Braun, April 2023
 
+# load packages
+library(ggplot2)
 library(readr)
+library(extrafont)
+library(openxlsx)
+library(Rcpp)
+library(tictoc)
+library(moments)
+library(confintr)
+library(stringr)
 library(dplyr)
 
+# clear workspace
 rm(list = ls())
 
 num_draws = 1000  # number of draws from interval
 set.seed(127)   # set random seed
-variation = 0.1
-num_decimals = 3
+variation = 0.1 # size of variation
+num_decimals = 3 # max. number of decimals (important due to file path length restrictions)
 
 # create vector of elasticity names
 elasticities = c("esubd", "esubm", "esubva")
+
 for(i in 1:length(elasticities)) {
   # load CSV file with baseline parameter values
   filename = paste("intervals_10p", elasticities[i], sep = "_")
@@ -59,4 +79,3 @@ for(i in 1:length(elasticities)) {
     )
 }
 rm(i, j, filename, file, paramspace)
-  
