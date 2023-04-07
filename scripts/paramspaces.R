@@ -11,8 +11,6 @@
 #   imported goods
 # - esubm(i): Armington elasticities
 # - esubva(j): elasticities between production factors
-# 
-# Marius Braun, April 2023
 
 # load packages
 library(ggplot2)

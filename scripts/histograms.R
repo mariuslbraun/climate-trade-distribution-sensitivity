@@ -3,8 +3,6 @@
 # main results of Hübler et al. (2022). Separate histograms are generated
 # for each policy scenario and income group. Bootstrap 95% confidence
 # intervals are computed using the percentile method.
-#
-# Marius Braun, April 2023
 
 # load packages
 library(ggplot2)
@@ -26,450 +24,100 @@ rm(list = ls())
 # set random seed
 set.seed(127)
 
+# create elasticity, policy and income group names
+elasticities = c("esubd", "esubm", "esubva")
+policies = c("policy", "cbam")
+inc_groups = c("lo", "mi", "hi")
 
-
-#### 1. esubm(i) ####
-# consumer split: plot welfare effects of EU climate policy and CBAM separately for income groups
-# EU climate policy
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_policy_lo = ci_mean(welf_esubm_10p$policy_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_lo_mean_esubm_minus_error_margin = ci_esubm_policy_lo$interval[1]
-policy_lo_mean_esubm_plus_error_margin = ci_esubm_policy_lo$interval[2]
-
-# histogram for policy_lo
-p.esubm.10p.policy_lo = ggplot(welf_esubm_10p, aes(x = policy_lo)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$policy_lo),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_lo_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_lo_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.policy_lo
-ggsave("hist_esubm(i)_10p_policy_lo.pdf")
-remove(ci_esubm_policy_lo, policy_lo_mean_esubm_minus_error_margin, policy_lo_mean_esubm_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_policy_mi = ci_mean(welf_esubm_10p$policy_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_mi_mean_esubm_minus_error_margin = ci_esubm_policy_mi$interval[1]
-policy_mi_mean_esubm_plus_error_margin = ci_esubm_policy_mi$interval[2]
-
-# histogram for policy_mi
-p.esubm.10p.policy_mi = ggplot(welf_esubm_10p, aes(x = policy_mi)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$policy_mi),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_mi_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_mi_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.policy_mi
-ggsave("hist_esubm(i)_10p_policy_mi.pdf")
-remove(ci_esubm_policy_mi, policy_mi_mean_esubm_minus_error_margin, policy_mi_mean_esubm_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_policy_hi = ci_mean(welf_esubm_10p$policy_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_hi_mean_esubm_minus_error_margin = ci_esubm_policy_hi$interval[1]
-policy_hi_mean_esubm_plus_error_margin = ci_esubm_policy_hi$interval[2]
-
-
-# histogram for policy_hi
-p.esubm.10p.policy_hi = ggplot(welf_esubm_10p, aes(x = policy_hi)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$policy_hi),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_hi_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = policy_hi_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.policy_hi
-ggsave("hist_esubm(i)_10p_policy_hi.pdf")
-remove(ci_esubm_policy_hi, policy_hi_mean_esubm_minus_error_margin, policy_hi_mean_esubm_plus_error_margin)
-
-# CBAM
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_cbam_lo = ci_mean(welf_esubm_10p$cbam_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_lo_mean_esubm_minus_error_margin = ci_esubm_cbam_lo$interval[1]
-cbam_lo_mean_esubm_plus_error_margin = ci_esubm_cbam_lo$interval[2]
-
-
-# histogram for cbam_lo
-p.esubm.10p.cbam_lo = ggplot(welf_esubm_10p, aes(x = cbam_lo)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$cbam_lo),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_lo_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_lo_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.cbam_lo
-ggsave("hist_esubm(i)_10p_cbam_lo.pdf")
-remove(ci_esubm_cbam_lo, cbam_lo_mean_esubm_minus_error_margin, cbam_lo_mean_esubm_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_cbam_mi = ci_mean(welf_esubm_10p$cbam_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_mi_mean_esubm_minus_error_margin = ci_esubm_cbam_mi$interval[1]
-cbam_mi_mean_esubm_plus_error_margin = ci_esubm_cbam_mi$interval[2]
-
-# histogram for cbam_mi
-p.esubm.10p.cbam_mi = ggplot(welf_esubm_10p, aes(x = cbam_mi)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$cbam_mi),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_mi_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_mi_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.cbam_mi
-ggsave("hist_esubm(i)_10p_cbam_mi.pdf")
-remove(ci_esubm_cbam_mi, cbam_mi_mean_esubm_minus_error_margin, cbam_mi_mean_esubm_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubm_cbam_hi = ci_mean(welf_esubm_10p$cbam_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_hi_mean_esubm_minus_error_margin = ci_esubm_cbam_hi$interval[1]
-cbam_hi_mean_esubm_plus_error_margin = ci_esubm_cbam_hi$interval[2]
-
-
-# histogram for cbam_hi
-p.esubm.10p.cbam_hi = ggplot(welf_esubm_10p, aes(x = cbam_hi)) +
-    geom_histogram(aes(y = ..density..),
-                   color = "black", fill = "#AFC4DE", bins = 15) +
-    geom_vline(xintercept = mean(welf_esubm_10p$cbam_hi),
-               color = "#36638B", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_hi_mean_esubm_minus_error_margin,
-               color = "black", linetype = "dashed", size = 1) +
-    geom_vline(xintercept = cbam_hi_mean_esubm_plus_error_margin,
-               color = "black", linetype = "dashed", size = 1) + 
-    labs(x = "Welfare change / %", y = "Density") +
-    geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-    theme_minimal(base_size = 18.5)
-p.esubm.10p.cbam_hi
-ggsave("hist_esubm(i)_10p_cbam_hi.pdf")
-remove(ci_esubm_cbam_hi, cbam_hi_mean_esubm_minus_error_margin, cbam_hi_mean_esubm_plus_error_margin)
-
-
-
-#### 2. esubd(i) ####
-# consumer split: plot welfare effects of EU climate policy and CBAM separately for income groups
-# EU climate policy
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_policy_lo = ci_mean(welf_esubd_10p$policy_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_lo_mean_esubd_minus_error_margin = ci_esubd_policy_lo$interval[1]
-policy_lo_mean_esubd_plus_error_margin = ci_esubd_policy_lo$interval[2]
-
-# histogram for policy_lo
-p.esubd.10p.policy_lo = ggplot(welf_esubd_10p, aes(x = policy_lo)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$policy_lo),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_lo_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_lo_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.policy_lo
-ggsave("hist_esubd(i)_10p_policy_lo.pdf")
-remove(ci_esubd_policy_lo, policy_lo_mean_esubd_minus_error_margin, policy_lo_mean_esubd_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_policy_mi = ci_mean(welf_esubd_10p$policy_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_mi_mean_esubd_minus_error_margin = ci_esubd_policy_mi$interval[1]
-policy_mi_mean_esubd_plus_error_margin = ci_esubd_policy_mi$interval[2]
-
-# histogram for policy_mi
-p.esubd.10p.policy_mi = ggplot(welf_esubd_10p, aes(x = policy_mi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$policy_mi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_mi_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_mi_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.policy_mi
-ggsave("hist_esubd(i)_10p_policy_mi.pdf")
-remove(ci_esubd_policy_mi, policy_mi_mean_esubd_minus_error_margin, policy_mi_mean_esubd_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_policy_hi = ci_mean(welf_esubd_10p$policy_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_hi_mean_esubd_minus_error_margin = ci_esubd_policy_hi$interval[1]
-policy_hi_mean_esubd_plus_error_margin = ci_esubd_policy_hi$interval[2]
-
-
-# histogram for policy_hi
-p.esubd.10p.policy_hi = ggplot(welf_esubd_10p, aes(x = policy_hi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$policy_hi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_hi_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_hi_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.policy_hi
-ggsave("hist_esubd(i)_10p_policy_hi.pdf")
-remove(ci_esubd_policy_hi, policy_hi_mean_esubd_minus_error_margin, policy_hi_mean_esubd_plus_error_margin)
-
-# CBAM
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_cbam_lo = ci_mean(welf_esubd_10p$cbam_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_lo_mean_esubd_minus_error_margin = ci_esubd_cbam_lo$interval[1]
-cbam_lo_mean_esubd_plus_error_margin = ci_esubd_cbam_lo$interval[2]
-
-
-# histogram for cbam_lo
-p.esubd.10p.cbam_lo = ggplot(welf_esubd_10p, aes(x = cbam_lo)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$cbam_lo),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_lo_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_lo_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.cbam_lo
-ggsave("hist_esubd(i)_10p_cbam_lo.pdf")
-remove(ci_esubd_cbam_lo, cbam_lo_mean_esubd_minus_error_margin, cbam_lo_mean_esubd_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_cbam_mi = ci_mean(welf_esubd_10p$cbam_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_mi_mean_esubd_minus_error_margin = ci_esubd_cbam_mi$interval[1]
-cbam_mi_mean_esubd_plus_error_margin = ci_esubd_cbam_mi$interval[2]
-
-# histogram for cbam_mi
-p.esubd.10p.cbam_mi = ggplot(welf_esubd_10p, aes(x = cbam_mi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$cbam_mi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_mi_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_mi_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.cbam_mi
-ggsave("hist_esubd(i)_10p_cbam_mi.pdf")
-remove(ci_esubd_cbam_mi, cbam_mi_mean_esubd_minus_error_margin, cbam_mi_mean_esubd_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubd_cbam_hi = ci_mean(welf_esubd_10p$cbam_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_hi_mean_esubd_minus_error_margin = ci_esubd_cbam_hi$interval[1]
-cbam_hi_mean_esubd_plus_error_margin = ci_esubd_cbam_hi$interval[2]
-
-
-# histogram for cbam_hi
-p.esubd.10p.cbam_hi = ggplot(welf_esubd_10p, aes(x = cbam_hi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubd_10p$cbam_hi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_hi_mean_esubd_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_hi_mean_esubd_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubd.10p.cbam_hi
-ggsave("hist_esubd(i)_10p_cbam_hi.pdf")
-remove(ci_esubd_cbam_hi, cbam_hi_mean_esubd_minus_error_margin, cbam_hi_mean_esubd_plus_error_margin)
-
-
-
-
-#### 3. esubva(j) ####
-# consumer split: plot welfare effects of EU climate policy and CBAM separately for income groups
-# EU climate policy
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_policy_lo = ci_mean(welf_esubva_10p$policy_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_lo_mean_esubva_minus_error_margin = ci_esubva_policy_lo$interval[1]
-policy_lo_mean_esubva_plus_error_margin = ci_esubva_policy_lo$interval[2]
-
-# histogram for policy_lo
-p.esubva.10p.policy_lo = ggplot(welf_esubva_10p, aes(x = policy_lo)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$policy_lo),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_lo_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_lo_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.policy_lo
-ggsave("hist_esubva(j)_10p_policy_lo.pdf")
-remove(ci_esubva_policy_lo, policy_lo_mean_esubva_minus_error_margin, policy_lo_mean_esubva_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_policy_mi = ci_mean(welf_esubva_10p$policy_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_mi_mean_esubva_minus_error_margin = ci_esubva_policy_mi$interval[1]
-policy_mi_mean_esubva_plus_error_margin = ci_esubva_policy_mi$interval[2]
-
-# histogram for policy_mi
-p.esubva.10p.policy_mi = ggplot(welf_esubva_10p, aes(x = policy_mi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$policy_mi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_mi_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_mi_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.policy_mi
-ggsave("hist_esubva(j)_10p_policy_mi.pdf")
-remove(ci_esubva_policy_mi, policy_mi_mean_esubva_minus_error_margin, policy_mi_mean_esubva_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_policy_hi = ci_mean(welf_esubva_10p$policy_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-policy_hi_mean_esubva_minus_error_margin = ci_esubva_policy_hi$interval[1]
-policy_hi_mean_esubva_plus_error_margin = ci_esubva_policy_hi$interval[2]
-
-
-# histogram for policy_hi
-p.esubva.10p.policy_hi = ggplot(welf_esubva_10p, aes(x = policy_hi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$policy_hi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_hi_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = policy_hi_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.policy_hi
-ggsave("hist_esubva(j)_10p_policy_hi.pdf")
-remove(ci_esubva_policy_hi, policy_hi_mean_esubva_minus_error_margin, policy_hi_mean_esubva_plus_error_margin)
-
-# CBAM
-
-# low-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_cbam_lo = ci_mean(welf_esubva_10p$cbam_lo, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_lo_mean_esubva_minus_error_margin = ci_esubva_cbam_lo$interval[1]
-cbam_lo_mean_esubva_plus_error_margin = ci_esubva_cbam_lo$interval[2]
-
-
-# histogram for cbam_lo
-p.esubva.10p.cbam_lo = ggplot(welf_esubva_10p, aes(x = cbam_lo)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$cbam_lo),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_lo_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_lo_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.cbam_lo
-ggsave("hist_esubva(j)_10p_cbam_lo.pdf")
-remove(ci_esubva_cbam_lo, cbam_lo_mean_esubva_minus_error_margin, cbam_lo_mean_esubva_plus_error_margin)
-
-# middle-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_cbam_mi = ci_mean(welf_esubva_10p$cbam_mi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_mi_mean_esubva_minus_error_margin = ci_esubva_cbam_mi$interval[1]
-cbam_mi_mean_esubva_plus_error_margin = ci_esubva_cbam_mi$interval[2]
-
-# histogram for cbam_mi
-p.esubva.10p.cbam_mi = ggplot(welf_esubva_10p, aes(x = cbam_mi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$cbam_mi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_mi_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_mi_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.cbam_mi
-ggsave("hist_esubva(j)_10p_cbam_mi.pdf")
-remove(ci_esubva_cbam_mi, cbam_mi_mean_esubva_minus_error_margin, cbam_mi_mean_esubva_plus_error_margin)
-
-# high-income group
-# calculate 95 % confidence intervals via bootstrapping
-ci_esubva_cbam_hi = ci_mean(welf_esubva_10p$cbam_hi, type = "bootstrap", boot_type = "perc", R = 1000)
-cbam_hi_mean_esubva_minus_error_margin = ci_esubva_cbam_hi$interval[1]
-cbam_hi_mean_esubva_plus_error_margin = ci_esubva_cbam_hi$interval[2]
-
-
-# histogram for cbam_hi
-p.esubva.10p.cbam_hi = ggplot(welf_esubva_10p, aes(x = cbam_hi)) +
-  geom_histogram(aes(y = ..density..),
-                 color = "black", fill = "#AFC4DE", bins = 15) +
-  geom_vline(xintercept = mean(welf_esubva_10p$cbam_hi),
-             color = "#36638B", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_hi_mean_esubva_minus_error_margin,
-             color = "black", linetype = "dashed", size = 1) +
-  geom_vline(xintercept = cbam_hi_mean_esubva_plus_error_margin,
-             color = "black", linetype = "dashed", size = 1) + 
-  labs(x = "Welfare change / %", y = "Density") +
-  geom_density(alpha = 0.2, color = "#36638B", size = 1) +
-  theme_minimal(base_size = 18.5)
-p.esubva.10p.cbam_hi
-ggsave("hist_esubva(j)_10p_cbam_hi.pdf")
-remove(ci_esubva_cbam_hi, cbam_hi_mean_esubva_minus_error_margin, cbam_hi_mean_esubva_plus_error_margin)
+for(i in 1:length(elasticities)) {
+  # load welfare effects data frame
+  welf_name = paste("welf", elasticities[i], sep = "_")
+  
+  assign(
+    x = welf_name,
+    value = readRDS(
+         paste0("prepared/", welf_name, ".rds")
+    )
+  )
+  
+  # compute bootstrap 95% confidence intervals
+  # and create histograms
+  for(j in 1:length(policies)) {
+    for(k in 1:length(inc_groups)) {
+      welf_effect_name = paste(
+        policies[j], inc_groups[k], sep = "_"
+      )
+      welf_effect = (get(welf_name))[welf_effect_name]
+      
+      # compute bootstrap 95% confidence intervals
+      ci_value = ci_mean(
+        welf_effect[, ],
+        type = "bootstrap",
+        boot_type = "perc",
+        R = 1000
+      )
+      
+      # create histogram with mean and 95% confidence intervals
+      plot_name = paste("hist",
+                        elasticities[i],
+                        welf_effect_name,
+                        sep = "_"
+                        )
+      plot_value = ggplot(
+        data = get(welf_name),
+        aes(x = welf_effect[, ])) +
+        # histogram
+        geom_histogram(
+          aes(y = after_stat(density)),
+          color = "black",
+          fill = "#AFC4DE",
+          bins = 15
+          ) +
+        # mean
+        geom_vline(
+          xintercept = mean(welf_effect[, ]),
+          color = "#36638B",
+          linetype = "dashed",
+          size = 1
+          ) +
+        # lower bound of 95% confidence intervals
+        geom_vline(
+          xintercept = ci_value$interval[1],
+          color = "black",
+          linetype = "dashed",
+          size = 1
+          ) +
+        # lower bound of 95% confidence intervals
+        geom_vline(
+          xintercept = ci_value$interval[2],
+          color = "black",
+          linetype = "dashed",
+          size = 1
+          ) +
+        # label axes
+        labs(
+          x = "Welfare change / %",
+          y = "Density"
+          ) +
+        # Kernel density estimation
+        geom_density(
+          alpha = 0.2,
+          color = "#36638B",
+          size = 1
+          ) +
+        theme_minimal(base_size = 18.5)
+      
+      # save histogram as PDF
+      ggsave(
+        paste(
+          "figures",
+          elasticities[i],
+          paste0(plot_name, ".pdf"),
+          sep = "/")
+      )
+    }
+  }
+}
+rm(i, j, k, welf_effect_name, welf_effect, welf_name,
+   ci_value, plot_name, plot_value, elasticities,
+   inc_groups, policies)

@@ -3,8 +3,6 @@
 # et al. (2022). Welfare effects are then stored in a separate data
 # frame for esubd(i), esubm(i) and esubva(j) and saved in RDS files
 # to be used in subsequent analyses.
-#
-# Marius Braun, April 2023
 
 # load packages
 library(ggplot2)
@@ -84,9 +82,11 @@ for(i in 1:length(elasticities)) {
                               collapse = "|")
                  )
         )
-      welfare = welfare %>% arrange(desc(X3))
+      welfare = welfare %>%
+          arrange(desc(X3))
+
     }
-    welf[l, ] = t(welfare$X4)
+    welf[l, ] = t(as.numeric(welfare$X4))
   }
   
   # name welfare effects data frame
