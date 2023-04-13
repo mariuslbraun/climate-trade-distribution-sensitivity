@@ -28,13 +28,13 @@ elasticities = c("esubd", "esubm", "esubva")
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
-for(i in 1:length(elasticities)) {
+for(elasticity in 1:length(elasticities)) {
   # load file paths of output files
   filenames = as.data.frame(
     list.files(
       paste(
         dir,
-        elasticities[i],
+        elasticities[elasticity],
         sep = "/"
         ),
       pattern = "output.xlsx",
@@ -46,7 +46,7 @@ for(i in 1:length(elasticities)) {
   # create empty data frame to store welfare effects
   welf_name = paste(
     "welf",
-    elasticities[i],
+    elasticities[elasticity],
     sep = "_"
   )
   welf = as.data.frame(
@@ -57,23 +57,23 @@ for(i in 1:length(elasticities)) {
   )
   
   # name columns of data frame according to policy and income group
-  for(j in 1:length(policies)) {
-    for(k in 1:length(inc_groups)) {
-      col_num = k +
-        (as.numeric(policies[j] == "cbam") * length(inc_groups))
+  for(policy in 1:length(policies)) {
+    for(inc_group in 1:length(inc_groups)) {
+      col_num = inc_group +
+        (as.numeric(policies[policy] == "cbam") * length(inc_groups))
       colnames(welf)[col_num] = paste(
-        policies[j],
-        inc_groups[k],
+        policies[policy],
+        inc_groups[inc_group],
         sep = "_"
       )
     }
   }
   
   # get welfare effects from output files
-  for(l in 1:nrow(filenames)) {
-    f = filenames$files[l]
-    if(file.exists(f)) {
-      welfare = read.xlsx(f, sheet = "welfp") %>%
+  for(f in 1:nrow(filenames)) {
+    filename = filenames$files[f]
+    if(file.exists(filename)) {
+      welfare = read.xlsx(filename, sheet = "welfp") %>%
         filter(TOC == "DEU" &
                  str_detect(X3,
                             paste(
@@ -86,7 +86,7 @@ for(i in 1:length(elasticities)) {
           arrange(desc(X3))
 
     }
-    welf[l, ] = t(as.numeric(welfare$X4))
+    welf[f, ] = t(as.numeric(welfare$X4))
   }
   
   # name welfare effects data frame
@@ -103,5 +103,6 @@ for(i in 1:length(elasticities)) {
             ".rds")
           )
 }
-rm(i, j, k, l, f, col_num, welf_name, welf, filenames,
+rm(elasticity, policy, inc_group, filename, f,
+   col_num, welf_name, welf, filenames,
    welfare, dir, elasticities, inc_groups, policies)
