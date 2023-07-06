@@ -29,51 +29,45 @@ rm(list = ls())
 
 num_draws = 1000  # number of draws from interval
 set.seed(127)   # set random seed
-variation = 0.1 # size of variation
+var = 0.1 # size of variation
 num_decimals = 3 # max. number of decimals (important due to file path length restrictions)
 
 # create vector of elasticity names
 elasticities = c("esubd", "esubm", "esubva")
 
-for(i in 1:length(elasticities)) {
+# create parameter spaces
+make_paramspace = function(elasticity_type) {
   # load CSV file with baseline parameter values
-  filename = paste("intervals_10p", elasticities[i], sep = "_")
-  file = read.csv(
-    paste0("paramspaces/", elasticities[i], "_baseline.csv"),
+  baseline = read.csv(
+    paste0("paramspaces/", elasticity_type, "_baseline.csv"),
     header = T
   )
-  # vary baseline values by +- 10%
-  file$elasticity_minus_10p = file$elasticity * (1 - variation)
-  file$elasticity_plus_10p = file$elasticity * (1 + variation)
+  # vary baseline values by +- var %
+  baseline$elasticity_minus_10p = baseline$elasticity * (1 - var)
+  baseline$elasticity_plus_10p = baseline$elasticity * (1 + var)
   
-  assign(
-    x = filename,
-    value = file
-  )
-  
-  num_sectors = nrow(get(filename))
   paramspace = data.frame(matrix(nrow = num_draws, ncol = 0))
   
-  # generate draws from a uniform distribution of +- 10 % around each estimate
-  for(j in 1:num_sectors){
-    paramspace = cbind(
-      paramspace, 
-      round(
-        runif(
-        num_draws,
-        min = (get(filename))["elasticity_minus_10p"][j, ],
-        max = (get(filename))["elasticity_plus_10p"][j, ]),
-        num_decimals
-        )
-      )
+  # generate draws from a uniform distribution of +- var % around each estimate
+  make_draws = function(sector) {
+    sector_draws = round(
+      x = runif(
+        n = nrow(paramspace),
+        min = baseline["elasticity_minus_10p"][sector, ],
+        max = baseline["elasticity_plus_10p"][sector, ]
+      ),
+      digits = num_decimals
+    )
+    paramspace = cbind(paramspace, sector_draws)
   }
+  paramspace = as.data.frame(lapply(X = 1:nrow(baseline), FUN = make_draws))
   
   # write parameter space to CSV file
-  colnames(paramspace) = (get(filename))$X...sector
+  colnames(paramspace) = baseline$X...sector
   write.csv(
     paramspace,
-    paste0("paramspaces/paramspace_", elasticities[i], ".csv"),
+    paste0("paramspaces/paramspace_", elasticity_type, ".csv"),
     row.names = FALSE
-    )
+  )
 }
-rm(i, j, filename, file, paramspace)
+lapply(X = elasticities, FUN = make_paramspace)
