@@ -1,8 +1,10 @@
-This repo contains R code for the sensitivity analysis of the CGE model developed in Hübler et al. (2022). Using household data from the German Income and Expenditure Survey, we analyze distributional effects of climate policy 
+# CGE model sensitivity analysis for Hübler et al. (2022)
+
+This repo contains R code for the sensitivity analysis of the computable general equilibrium (CGE) model developed in Hübler et al. (2022). Using household data from the German Income and Expenditure Survey, we analyze distributional effects of climate policy 
 in Germany in a CGE model calibrated to GTAP 10 data (Aguiar et al. 2019). We find that the negative consumption effect of CO2 pricing is highest for the low-income group, whereas the negative income effect is highest for the high-income group and exceeds
 the consumption effect. The low-income group benefits most from (per capita-based redistribution of) carbon pricing revenues and receives social transfers such that poor households can be better off with such climate policies than without them. CO2 pricing of imports at the EU border strengthens these distributional effects and is mainly beneficial for the low-income group.
 
-To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. In this repo, we provide R code for the generating parameter spaces for the sensitivity analysis,
+To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. The sensitivity analysis is carried out using the [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management system. In this repo, we provide R code for the generating parameter spaces for the sensitivity analysis,
 processing the output files from the model runs and generating histograms of the resulting welfare effect distributions.
 
 ## 1. Setting up the R environment
@@ -32,27 +34,55 @@ The state of the library is saved in the [renv.lock](renv.lock) file.
 [paramspaces.R](scripts/paramspaces.R) generates parameter spaces for the model runs of the sensitivity analysis. In particular, three sets of sector-level elasticity of substition parameters are considered, for which baseline values are
 taken from Pothen and Hübler (2018):
 
-- esubd(i): elasticities between domestically produced versus imported goods
-- esubm(i): Armington elasticities
-- esubva(j): elasticities between production factors
+- ``esubd``: elasticities between domestically produced versus imported goods
+- ``esubm``: Armington elasticities
+- ``esubva``: elasticities between production factors
 
 For each set of parameters, we generate 1000 random draws from a +-10 % interval around each of the sector-specific elasticities, resulting in 1000 sets of sectoral parameter values.
-The parameter spaces as well as the baseline values with +-10 % intervals are stored as CSV files in [paramspaces](paramspaces).
+The parameter spaces as well as the baseline values with +-10 % intervals are stored as .CSV files in [paramspaces](paramspaces). Each row in the parameter space .CSV files corresponds to one set of parameter values, and each column corresponds to one of the 17 sectors of the CGE model. The following abbrevations are used for the sectors:
+- ``AGR``: Agriculture
+- ``COA``: Coal
+- ``CRU``: Crude oil
+- ``NGA``: Natural gas
+- ``PET``: Refined petroleum
+- ``FOO``: Food production
+- ``MIN``: Mining
+- ``PAP``: Paper and pulp
+- ``CHE``: Chemicals, rubber and plastic
+- ``NMM``: Mineral products nec.
+- ``IRS``: Iron and steel
+- ``NFM``: Non-ferrous metals
+- ``MAN``: Manufacturing
+- ``ELE``: Electricity
+- ``TRN``: Transport
+- ``CON``: Construction
+- ``SER``: Services
 
 ## 3. Loading data on welfare effects
 
 The CGE model is programmed as a mixed complementarity problem (MCP) in general algebraic modeling system (GAMS; Bussieck and Meeraus 2004).
 For each set of parameter values, we recalibrate and solve the model and evaluate the welfare effects for our policy scenarios.
-Each model run produces an .XLSX output file with the model results; the output files can be found [here](https://drive.google.com/drive/folders/1AfjqhgV3Nl9SPAXqZ9UmK4E8U-cjW-TL?usp=sharing). [welf_data.R](scripts/welf_data.R) extracts the welfare
-effects of the two policy scenarios (*domestic CO2 price* and *border CO2 price*, labeled ``policy`` and ``cbam``, respectively) on the three income groups (low-, middle- and high-income, labeled ``lo``, ``mi`` and ``hi``, respectively) from the output files. The welfare effects are stored in a separate data frame for each set of elasticity parameters in [prepared](prepared).
+Each model run produces an .XLSX output file with the model results for the respective set of parameter values in a dedicated subfolder; the output files can be found [here](https://drive.google.com/drive/folders/1AfjqhgV3Nl9SPAXqZ9UmK4E8U-cjW-TL?usp=sharing).
+
+Welfare effects of the two policy scenarios (*domestic CO2 price* and *border CO2 price*, labeled ``policy`` and ``cbam``, respectively) on the three income groups (low-, middle- and high-income, labeled ``lo``, ``mi`` and ``hi``, respectively) are expressed as percentage changes relative to the baseline scenario with no policy. In the .XLSX output files, these effects can be found in the sheet "welfp". [welf_data.R](scripts/welf_data.R) extracts the welfare effects from the output files and collects them in a separate data frame for each set of elasticity parameters in [prepared](prepared). When replicating the analysis, make sure to provide the directory in which the .XSLX output files are stored at the top of the script:
+```
+# clear workspace
+rm(list = ls())
+
+# this is where you put the output files from the sensitivity analysis
+# (use separate subdirectories for esubd(i), esubm(i), and esubva(j))
+dir = "C:/Users/Marius Braun/output_sensitivity"
+```
 
 ## 4. Histograms
 
-[histograms.R](scripts/histograms.R) produces histograms of the distributions of welfare effects by policy scenario and income group for each parameter set. As an example, the following figure shows the distributions of welfare effects of *Domestic CO2 price* for varying Armington elasticities. Kernel density estimations are indicated by solid blue lines, and dashed vertical black lines represent 95% confidence intervals obtained via percentile bootstrapping.
+[histograms.R](scripts/histograms.R) produces histograms of the distributions of welfare effects by policy scenario and income group for each parameter set. As an example, the following figure shows the distributions of welfare effects of *Domestic CO2 price* for varying Armington elasticities ``esubm``. Kernel density estimations are indicated by solid blue lines, and dashed vertical black lines represent 95% confidence intervals obtained via percentile bootstrapping.
 
 |Low-income|Middle-income|High-income|
 |-----|-----|-----|
 |![hist_esubm_policy_lo](figures/esubm/hist_esubm_policy_lo.png)|![hist_esubm_policy_mi](figures/esubm/hist_esubm_policy_mi.png)|![hist_esubm_policy_hi](figures/esubm/hist_esubm_policy_hi.png)|
+
+Analogous histograms are produced for ``esubd`` and ``esubva``.
 
 ## References
 Aguiar, A., M. Chepeliev, E.L. Corong, R. McDougall and D. van der Mensbrugghe (2019). The GTAP data base: version 10. *Journal of Global Economic Analysis* 4, 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
