@@ -44,13 +44,22 @@ The parameter spaces as well as the baseline values with +-10 % intervals are st
 The CGE model is programmed as a mixed complementarity problem (MCP) in general algebraic modeling system (GAMS; Bussieck and Meeraus 2004).
 For each set of parameter values, we recalibrate and solve the model and evaluate the welfare effects for our policy scenarios.
 Each model run produces an .XLSX output file with the model results; the output files can be found [here](https://drive.google.com/drive/folders/1AfjqhgV3Nl9SPAXqZ9UmK4E8U-cjW-TL?usp=sharing). [welf_data.R](scripts/welf_data.R) extracts the welfare
-effects of the two policy scenarios (*domestic CO2 price* and *border CO2 price*, labeled ``policy`` and ``cbam`` in the code, respectively) on the three income groups (low-, middle- and high-income, labeled ``lo``, ``mi`` and ``hi``, respectively) from the output files. The welfare effects are stored in a separate data frame for each set of elasticity parameters in [prepared](prepared).
+effects of the two policy scenarios (*domestic CO2 price* and *border CO2 price*, labeled ``policy`` and ``cbam``, respectively) on the three income groups (low-, middle- and high-income, labeled ``lo``, ``mi`` and ``hi``, respectively) from the output files. The welfare effects are stored in a separate data frame for each set of elasticity parameters in [prepared](prepared).
+
+## 4. Histograms
+
+[histograms.R](scripts/histograms.R) produces histograms of the distributions of welfare effects by policy scenario and income group for each parameter set. As an example, the following figure shows the distributions of welfare effects of *Domestic CO2 price* for varying Armington elasticities. Kernel density estimations are indicated by solid blue lines, and dashed vertical black lines represent 95% confidence intervals obtained via percentile bootstrapping.
+
+|Low-income|Middle-income|High-income|
+|-----|-----|-----|
+|![hist_esubm_policy_lo](figures/esubm/hist_esubm_policy_lo.png)|![hist_esubm_policy_mi](figures/esubm/hist_esubm_policy_mi.png)|![hist_esubm_policy_hi](figures/esubm/hist_esubm_policy_hi.png)|
 
 ## References
-Aguiar, A., Chepeliev, M., Corong, E. L., McDougall, R. and van der Mensbrugghe, D. (2019). The GTAP Data Base: Version 10. *Journal of Global Economic Analysis*, 4(1): 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
+Aguiar, A., M. Chepeliev, E.L. Corong, R. McDougall and D. van der Mensbrugghe (2019). The GTAP data base: version 10. *Journal of Global Economic Analysis* 4, 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
 
-Bussieck, M. R. and Meeraus, A. (2004). General Algebraic Modeling System (GAMS). In Kallrath, J., editor, *Modeling Languages in Mathematical Optimization*, 137–157. Springer US, Boston, MA. [https://doi.org/10.1007/978-1-4613-0215-5_8](https://doi.org/10.1007/978-1-4613-0215-5_8)
+Bussieck, M. R. and A. Meeraus (2004), General Algebraic Modeling System (GAMS), in: Kallrath, J. (ed.), *Modeling Languages in Mathematical Optimization*, p. 137–157, Springer US, Boston, MA. [https://doi.org/10.1007/978-1-4613-0215-5_8](https://doi.org/10.1007/978-1-4613-0215-5_8)
 
-Hübler et al. (2022)
+Hübler, M., M. Wiese, M. Braun and J. Damster (2022), The distributional effects of CO2 pricing at home and at the border on
+German income groups, ROCHADE Working Paper. [https://rochade-project.org/de/Assets/documents/2022-09-29_huebler-wiese_distributional-effects-of-german-co2-pricing.pdf](https://rochade-project.org/de/Assets/documents/2022-09-29_huebler-wiese_distributional-effects-of-german-co2-pricing.pdf)
 
-Pothen and Hübler (2018)
+Pothen, F. and M. Hübler (2018), The interaction of climate and trade policy, *European Economic Review* 107, 1-26. [https://doi.org/10.1016/j.euroecorev.2018.04.004](https://doi.org/10.1016/j.euroecorev.2018.04.004)
