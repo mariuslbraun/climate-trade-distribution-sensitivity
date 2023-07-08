@@ -74,7 +74,13 @@ rm(list = ls())
 dir = "C:/Users/Marius Braun/output_sensitivity"
 ```
 
-Importantly, pay attention to where you store the output files: The file paths of the subdirectories produced in the sensitivity analysis are relatively long and, depending on the file path of the directory that they are stored in, may exceed the file path length limit of 255 characters. If the file path length of the subdirectories exceeds this limit, you will not be able to read the output files in R.
+Importantly, pay attention to where you store the output files, as the file paths of the subdirectories produced in the sensitivity analysis are relatively long, e.g.:
+
+```
+C:/Users/Marius Braun/output_sensitivity/esubm/mAGR=2.5/mCOA=10.118/mCRU=8.152/mNGA=7.421/mPET=10.028/mFOO=3.602/mMIN=2.425/mPAP=4.883/mCHE=4.121/mNMM=5.963/mIRS=4.577/mNFM=4.14/mMAN=4.897/mELE=18.928/mTRN=6.544/mCON=14.747/mSER=5.913/output.xlsx
+```
+
+Depending on the file path of the directory that they are stored in, the file path length may exceed the file path length limit of 255 characters. If the file path length of the subdirectories exceeds this limit, you will not be able to read the output files in R.
 
 ## 4. Histograms
 
