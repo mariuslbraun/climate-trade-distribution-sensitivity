@@ -75,12 +75,15 @@ for(elasticity in 1:length(elasticities)) {
     if(file.exists(filename)) {
       welfare = read.xlsx(filename, sheet = "welfp") %>%
         filter(TOC == "DEU" &
-                 str_detect(X3,
-                            paste(
-                              paste0("\\b",
-                                     policies),
-                              collapse = "|")
-                 )
+               str_detect(X3,
+                          paste(
+                            paste0(
+                              "\\b",
+                              policies
+                            ),
+                            collapse = "|"
+                          )
+               )
         )
       welfare = welfare %>%
           arrange(desc(X3))
@@ -96,12 +99,14 @@ for(elasticity in 1:length(elasticities)) {
   )
   
   # save welfare effects data frame as RDS file
-  saveRDS(get(welf_name),
-          paste0(
-            "prepared/",
-            welf_name,
-            ".rds")
-          )
+  saveRDS(
+    get(welf_name),
+    paste0(
+      "prepared/",
+      welf_name,
+      ".rds"
+    )
+  )
 }
 rm(elasticity, policy, inc_group, filename, f,
    col_num, welf_name, welf, filenames,
