@@ -1,6 +1,6 @@
 This repo contains R code for the sensitivity analysis of the CGE model developed in Hübler et al. (2022). Using household data from the German Income and Expenditure Survey, we analyze distributional effects of climate policy 
-in Germany in a CGE model calibrated to GTAP 10 data. We find that the negative consumption effect of CO2 pricing is highest for the low-income group, whereas the negative income effect is highest for the high-income group and exceeds
-the consumption effect. The low-income group benefits most from (per capita-based redistribution of) carbon pricing revenues and receives social transfers such that poor households can be better off with such climate policies than without them.
+in Germany in a CGE model calibrated to GTAP 10 data (Aguiar et al. 2019). We find that the negative consumption effect of CO2 pricing is highest for the low-income group, whereas the negative income effect is highest for the high-income group and exceeds
+the consumption effect. The low-income group benefits most from (per capita-based redistribution of) carbon pricing revenues and receives social transfers such that poor households can be better off with such climate policies than without them. CO2 pricing of imports at the EU border strengthens these distributional effects and is mainly beneficial for the low-income group.
 
 To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. In this repo, we provide R code for the generating parameter spaces for the sensitivity analysis,
 processing the output files from the model runs and generating histograms of the resulting welfare effect distributions.
@@ -29,7 +29,7 @@ The state of the library is saved in the [renv.lock](renv.lock) file.
 
 ## 2. Generating parameter spaces
 
-[paramspaces.R](paramspaces.R) generates parameter spaces for the model runs of the sensitivity analysis. In particular, three sets of sector-level elasticity of substition parameters are considered, for which baseline values are
+[paramspaces.R](scripts/paramspaces.R) generates parameter spaces for the model runs of the sensitivity analysis. In particular, three sets of sector-level elasticity of substition parameters are considered, for which baseline values are
 taken from Pothen and Hübler (2018):
 
 - esubd(i): elasticities between domestically produced versus imported goods
@@ -38,3 +38,19 @@ taken from Pothen and Hübler (2018):
 
 For each set of parameters, we generate 1000 random draws from a +-10 % interval around each of the sector-specific elasticities, resulting in 1000 sets of sectoral parameter values.
 The parameter spaces as well as the baseline values with +-10 % intervals are stored as CSV files in [paramspaces](paramspaces).
+
+## 3. Loading data on welfare effects
+
+The CGE model is programmed as a mixed complementarity problem (MCP) in general algebraic modeling system (GAMS; Bussieck and Meeraus 2004).
+For each set of parameter values, we recalibrate and solve the model and evaluate the welfare effects for our policy scenarios.
+Each model run produces an .XLSX output file with the model results; the output files can be found [here](https://drive.google.com/drive/folders/1AfjqhgV3Nl9SPAXqZ9UmK4E8U-cjW-TL?usp=sharing). [welf_data.R](scripts/welf_data.R) extracts the welfare
+effects of the two policy scenarios (*domestic CO2 price* and *border CO2 price*, labeled ``policy`` and ``cbam`` in the code, respectively) on the three income groups (low-, middle- and high-income, labeled ``lo``, ``mi`` and ``hi``, respectively) from the output files. The welfare effects are stored in a separate data frame for each set of elasticity parameters in [prepared](prepared).
+
+## References
+Aguiar, A., Chepeliev, M., Corong, E. L., McDougall, R. and van der Mensbrugghe, D. (2019). The GTAP Data Base: Version 10. *Journal of Global Economic Analysis*, 4(1): 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
+
+Bussieck, M. R. and Meeraus, A. (2004). General Algebraic Modeling System (GAMS). In Kallrath, J., editor, *Modeling Languages in Mathematical Optimization*, 137–157. Springer US, Boston, MA. [https://doi.org/10.1007/978-1-4613-0215-5_8](https://doi.org/10.1007/978-1-4613-0215-5_8)
+
+Hübler et al. (2022)
+
+Pothen and Hübler (2018)
