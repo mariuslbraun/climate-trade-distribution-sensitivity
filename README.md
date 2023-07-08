@@ -82,7 +82,7 @@ dir = "C:/Users/Marius Braun/output_sensitivity"
 |-----|-----|-----|
 |![hist_esubm_policy_lo](figures/esubm/hist_esubm_policy_lo.png)|![hist_esubm_policy_mi](figures/esubm/hist_esubm_policy_mi.png)|![hist_esubm_policy_hi](figures/esubm/hist_esubm_policy_hi.png)|
 
-Analogously, histograms are produced for ``esubd`` and ``esubva``.
+Analogously, histograms of welfare effects by policy scenario and income group are produced for ``esubd`` and ``esubva``.
 
 ## References
 Aguiar, A., M. Chepeliev, E.L. Corong, R. McDougall and D. van der Mensbrugghe (2019). The GTAP data base: version 10. *Journal of Global Economic Analysis* 4, 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
