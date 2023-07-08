@@ -4,12 +4,12 @@ This repo contains R code for the sensitivity analysis of the computable general
 in Germany in a CGE model calibrated to GTAP 10 data (Aguiar et al. 2019). We find that the negative consumption effect of CO2 pricing is highest for the low-income group, whereas the negative income effect is highest for the high-income group and exceeds
 the consumption effect. The low-income group benefits most from (per capita-based redistribution of) carbon pricing revenues and receives social transfers such that poor households can be better off with such climate policies than without them. CO2 pricing of imports at the EU border strengthens these distributional effects and is mainly beneficial for the low-income group.
 
-To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. The sensitivity analysis is carried out using the [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management system. In this repo, we provide R code for the generating parameter spaces for the sensitivity analysis,
+To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. The sensitivity analysis is carried out using the [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management system. In this repo, we provide R code for generating parameter spaces for the sensitivity analysis,
 processing the output files from the model runs and generating histograms of the resulting welfare effect distributions.
 
 ## 1. Setting up the R environment
 
-First, open the R project file [climate-trade-distribution-sensitivity.Rproj](climate-trade-distribution-sensitivity.Rproj) in RStudio. It is important to work in the R project, as it is associated with the directory that the project is located in and will set the working directory accordingly.
+First, open the R project file [climate-trade-distribution-sensitivity.Rproj](climate-trade-distribution-sensitivity.Rproj) in RStudio. It is important to work using the .RProj file, as it is associated with the directory that the project is located in and will set the working directory accordingly.
 After opening the R project file, open [setup.R](setup.R). Running the file will set up an R environment using the `renv` package, which manages project-local R dependencies to ensure that existing data analysis workflows work as they did before;
 for more information see https://rstudio.github.io/renv/articles/renv.html
 
@@ -58,7 +58,7 @@ The parameter spaces as well as the baseline values with +-10 % intervals are st
 - ``CON``: Construction
 - ``SER``: Services
 
-## 3. Loading data on welfare effects
+## 3. Processing data on welfare effects
 
 The CGE model is programmed as a mixed complementarity problem (MCP) in general algebraic modeling system (GAMS; Bussieck and Meeraus 2004).
 For each set of parameter values, we recalibrate and solve the model and evaluate the welfare effects for our policy scenarios.
@@ -73,6 +73,8 @@ rm(list = ls())
 # (use separate subdirectories for esubd(i), esubm(i), and esubva(j))
 dir = "C:/Users/Marius Braun/output_sensitivity"
 ```
+
+Importantly, pay attention to where you store the output files: The file paths of the subdirectories produced in the sensitivity analysis are relatively long and, depending on the file path of the directory that they are stored in, may exceed the file path length limit of 255 characters. If the file path length of the subdirectories exceeds this limit, you will not be able to read the output files in R.
 
 ## 4. Histograms
 
