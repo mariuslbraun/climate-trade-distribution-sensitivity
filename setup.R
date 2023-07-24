@@ -20,7 +20,7 @@ renv::init(bare = TRUE)
 # Install the packages
 install.packages(c(
   "ggplot2", "readr", "extrafont", "openxlsx", "Rcpp", "tictoc", "moments",
-  "confintr", "dplyr", "stringr"
+  "confintr", "dplyr", "stringr", "foreach", "doSNOW", "parallel"
   ))
 
 # Take a snapshot of the renv

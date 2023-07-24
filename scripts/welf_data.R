@@ -15,6 +15,9 @@ library(moments)
 library(confintr)
 library(stringr)
 library(dplyr)
+library(doSNOW)
+library(foreach)
+library(parallel)
 
 # clear workspace
 rm(list = ls())
@@ -28,7 +31,19 @@ elasticities = c("esubd", "esubm", "esubva")
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
-for(elasticity in 1:length(elasticities)) {
+# parallelize
+cl = makeCluster(detectCores() - 2, type = "SOCK") # make cluster
+registerDoSNOW(cl) # register cluster
+packages = c( # load packages
+  "ggplot2", "readr", "extrafont", "openxlsx", "Rcpp", "tictoc", "moments",
+  "confintr", "dplyr", "stringr", "foreach", "doSNOW", "parallel"
+)
+
+# create welfare effects data frames
+welf_output = foreach(
+  elasticity = 1:length(elasticities),
+  .packages = packages
+  ) %dopar% {
   # load file paths of output files
   filenames = as.data.frame(
     list.files(
@@ -36,7 +51,7 @@ for(elasticity in 1:length(elasticities)) {
         dir,
         elasticities[elasticity],
         sep = "/"
-        ),
+      ),
       pattern = "output.xlsx",
       full.names = T,
       recursive = T)
@@ -75,39 +90,40 @@ for(elasticity in 1:length(elasticities)) {
     if(file.exists(filename)) {
       welfare = read.xlsx(filename, sheet = "welfp") %>%
         filter(TOC == "DEU" &
-               str_detect(X3,
-                          paste(
-                            paste0(
-                              "\\b",
-                              policies
-                            ),
-                            collapse = "|"
-                          )
-               )
+                 str_detect(X3,
+                            paste(
+                              paste0(
+                                "\\b",
+                                policies
+                              ),
+                              collapse = "|"
+                            )
+                 )
         )
       welfare = welfare %>%
-          arrange(desc(X3))
-
+        arrange(desc(X3))
+      
     }
     welf[f, ] = t(as.numeric(welfare$X4))
   }
   
   # name welfare effects data frame
-  assign(
-    x = welf_name,
-    value = welf
-  )
+  assign(x = welf_name, value = welf)
   
   # save welfare effects data frame as RDS file
   saveRDS(
     get(welf_name),
-    paste0(
-      "prepared/",
-      welf_name,
-      ".rds"
-    )
+    paste0("prepared/", welf_name, ".rds")
+  )
+  return(get(welf_name))
+}
+stopCluster(cl)
+
+# unlist data frames
+for(elasticity in 1:length(elasticities)) {
+  assign(
+    x = paste("welf", elasticities[elasticity], sep = "_"),
+    value = welf_output[[elasticity]]
   )
 }
-rm(elasticity, policy, inc_group, filename, f,
-   col_num, welf_name, welf, filenames,
-   welfare, dir, elasticities, inc_groups, policies)
+rm(elasticity, welf_output)
