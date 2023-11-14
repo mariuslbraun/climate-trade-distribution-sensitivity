@@ -7,7 +7,7 @@ the consumption effect. The low-income group benefits most from (per capita-base
 To check the robustness of our findings, we conduct a distributional sensitivity analysis of relevant sets of elasticity parameter values within our CGE model. The sensitivity analysis is carried out using the [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management system. In this repo, we provide R code for generating parameter spaces for the sensitivity analysis,
 processing the output files from the model runs and generating histograms of the resulting welfare effect distributions.
 
-## 1. Setting up the R environment
+## 1. Setup
 
 First, open the R project file [climate-trade-distribution-sensitivity.Rproj](climate-trade-distribution-sensitivity.Rproj) in RStudio. It is important to work using the .RProj file, as it is associated with the directory that the project is located in and will set the working directory accordingly.
 After opening the R project file, open [setup.R](setup.R). Running the file will set up an R environment using the `renv` package, which manages project-local R dependencies to ensure that existing data analysis workflows work as they did before;
