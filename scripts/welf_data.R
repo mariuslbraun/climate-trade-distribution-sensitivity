@@ -26,8 +26,13 @@ rm(list = ls())
 # (use separate subdirectories for esubd(i), esubm(i), and esubva(j))
 dir = "C:/Users/Marius Braun/output_sensitivity"
 
-# string vectors for elasticity, policy and income group names
-elasticities = c("esubd", "esubm", "esubva")
+# string vectors for parameter, policy and income group names
+params = c(
+  # "esubd",
+  # "esubm",
+  # "esubva",
+  "CO2factor"
+)
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
@@ -41,16 +46,15 @@ packages = c( # load packages
 
 # create welfare effects data frames
 welf_output = foreach(
-  elasticity = 1:length(elasticities),
+  param = 1:length(params),
   .packages = packages
   ) %dopar% {
   # load file paths of output files
   filenames = as.data.frame(
     list.files(
-      paste(
+      file.path(
         dir,
-        elasticities[elasticity],
-        sep = "/"
+        params[1]
       ),
       pattern = "output.xlsx",
       full.names = T,
@@ -61,7 +65,7 @@ welf_output = foreach(
   # create empty data frame to store welfare effects
   welf_name = paste(
     "welf",
-    elasticities[elasticity],
+    params[param],
     sep = "_"
   )
   welf = as.data.frame(
@@ -88,17 +92,20 @@ welf_output = foreach(
   for(f in 1:nrow(filenames)) {
     filename = filenames$files[f]
     if(file.exists(filename)) {
+      # filter welfare effects for Germany and policy scenarios
       welfare = read.xlsx(filename, sheet = "welfp") %>%
-        filter(TOC == "DEU" &
-                 str_detect(X3,
-                            paste(
-                              paste0(
-                                "\\b",
-                                policies
-                              ),
-                              collapse = "|"
-                            )
-                 )
+        filter(
+         TOC == "DEU" &
+         str_detect(
+           X3,
+           paste(
+            paste0(
+              "\\b",
+              policies
+            ),
+            collapse = "|"
+           )
+         )
         )
       welfare = welfare %>%
         arrange(desc(X3))
@@ -120,10 +127,10 @@ welf_output = foreach(
 stopCluster(cl)
 
 # unlist data frames
-for(elasticity in 1:length(elasticities)) {
+for(param in 1:length(params)) {
   assign(
-    x = paste("welf", elasticities[elasticity], sep = "_"),
-    value = welf_output[[elasticity]]
+    x = paste("welf", params[param], sep = "_"),
+    value = welf_output[[param]]
   )
 }
-rm(elasticity, welf_output)
+rm(param, welf_output)
