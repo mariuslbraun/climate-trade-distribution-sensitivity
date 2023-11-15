@@ -54,7 +54,7 @@ welf_output = foreach(
     list.files(
       file.path(
         dir,
-        params[1]
+        params[param]
       ),
       pattern = "output.xlsx",
       full.names = T,
@@ -112,6 +112,19 @@ welf_output = foreach(
       
     }
     welf[f, ] = t(as.numeric(welfare$X4))
+  }
+
+  # if parameter is CO2factor: name rows according to CO2 target
+  if(params[param] == "CO2factor") {
+    rownames(welf) = str_split(
+      str_split(
+        filenames$files,
+        "=",
+        simplify = T
+        )[, 2],
+      "/",
+      simplify = T
+    )[, 1]
   }
   
   # name welfare effects data frame
