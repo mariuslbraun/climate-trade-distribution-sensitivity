@@ -15,6 +15,7 @@ library(moments)
 library(confintr)
 library(stringr)
 library(dplyr)
+library(tibble)
 font_import()
 loadfonts(device = "win")
 
@@ -25,99 +26,139 @@ rm(list = ls())
 set.seed(127)
 
 # create elasticity, policy and income group names
-elasticities = c("esubd", "esubm", "esubva")
+params = c(
+  #"esubd",
+  #"esubm",
+  #"esubva",
+  "CO2factor"
+)
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
-for(i in 1:length(elasticities)) {
+for(i in 1:length(params)) {
   # load welfare effects data frame
-  welf_name = paste("welf", elasticities[i], sep = "_")
-  
+  welf_name = paste("welf", params[i], sep = "_")
   assign(
     x = welf_name,
     value = readRDS(
-         paste0("prepared/", welf_name, ".rds")
+      paste0("prepared/", welf_name, ".rds")
     )
   )
+
+  # create subdirectory for figures
+  dir.create(
+    file.path("figures", params[i]),
+    showWarnings = F
+  )
   
-  # compute bootstrap 95% confidence intervals
-  # and create histograms
+  # create plots
   for(j in 1:length(policies)) {
     for(k in 1:length(inc_groups)) {
+      # get welfare effect from dataframe
       welf_effect_name = paste(
         policies[j], inc_groups[k], sep = "_"
       )
       welf_effect = (get(welf_name))[welf_effect_name]
       
-      # compute bootstrap 95% confidence intervals
-      ci_value = ci_mean(
-        welf_effect[, ],
-        type = "bootstrap",
-        boot_type = "perc",
-        R = 1000
+      # if parameter is CO2factor: line plot, else histogram
+      plot_type = ifelse(params[i] == "CO2factor", "plot", "hist")
+      
+      # create plot name
+      plot_name = paste(
+        plot_type,
+        params[i],
+        welf_effect_name,
+        sep = "_"
       )
-      
-      # create histogram with mean and 95% confidence intervals
-      plot_name = paste("hist",
-                        elasticities[i],
-                        welf_effect_name,
-                        sep = "_"
-                        )
-      plot_value = ggplot(
-        data = get(welf_name),
-        aes(x = welf_effect[, ])) +
-        # histogram
-        geom_histogram(
-          aes(y = after_stat(density)),
-          color = "black",
-          fill = "#AFC4DE",
-          bins = 15
+
+      # if parameter is CO2factor: create line plot
+      if(params[i] == "CO2factor") {
+        plot_value = ggplot(
+          data = get(welf_name)
+        ) +
+          # line plot
+          geom_line(
+            aes(
+              x = CO2factor,
+              y = welf_effect[, ],
+              group = 1
+            ),
+            color = "#36638B",
+            linewidth = 1
           ) +
-        # mean
-        geom_vline(
-          xintercept = mean(welf_effect[, ]),
-          color = "#36638B",
-          linetype = "dashed",
-          size = 1
+          scale_x_reverse(limits = c(NA, 0.8)) +
+          # label axes
+          labs(
+            x = "CO2 target",
+            y = "Welfare change / %"
           ) +
-        # lower bound of 95% confidence intervals
-        geom_vline(
-          xintercept = ci_value$interval[1],
-          color = "black",
-          linetype = "dashed",
-          size = 1
+          theme_minimal(base_size = 18.5)
+      } else { # else: create histogram with mean and 95% confidence intervals
+        # compute bootstrap 95% confidence intervals
+        ci_value = ci_mean(
+          welf_effect[, ],
+          type = "bootstrap",
+          boot_type = "perc",
+          R = 1000
+        )
+
+        plot_value = ggplot(
+          data = get(welf_name),
+          aes(x = welf_effect[, ])
+        ) +
+          # histogram
+          geom_histogram(
+            aes(y = after_stat(density)),
+            color = "black",
+            fill = "#AFC4DE",
+            bins = 15
+            ) +
+          # mean
+          geom_vline(
+            xintercept = mean(welf_effect[, ]),
+            color = "#36638B",
+            linetype = "dashed",
+            linewidth = 1
           ) +
-        # lower bound of 95% confidence intervals
-        geom_vline(
-          xintercept = ci_value$interval[2],
-          color = "black",
-          linetype = "dashed",
-          size = 1
+          # lower bound of 95% confidence intervals
+          geom_vline(
+            xintercept = ci_value$interval[1],
+            color = "black",
+            linetype = "dashed",
+            linewidth = 1
           ) +
-        # label axes
-        labs(
-          x = "Welfare change / %",
-          y = "Density"
+          # lower bound of 95% confidence intervals
+          geom_vline(
+            xintercept = ci_value$interval[2],
+            color = "black",
+            linetype = "dashed",
+            linewidth = 1
           ) +
-        # Kernel density estimation
-        geom_density(
-          alpha = 0.2,
-          color = "#36638B",
-          size = 1
+          # label axes
+          labs(
+            x = "Welfare change / %",
+            y = "Density"
           ) +
-        theme_minimal(base_size = 18.5)
-      
+          # Kernel density estimation
+          geom_density(
+            alpha = 0.2,
+            color = "#36638B",
+            linewidth = 1
+          ) +
+          theme_minimal(base_size = 18.5)
+      }
+
       # save histogram as PDF
       ggsave(
-        paste(
+        file.path(
           "figures",
-          elasticities[i],
-          paste0(plot_name, ".pdf"),
-          sep = "/")
+          params[i],
+          paste0(plot_name, ".pdf")
+        )
       )
     }
   }
 }
 rm(i, j, k, welf_effect_name, welf_effect, welf_name,
-   ci_value, plot_name, plot_value, elasticities,
+   ci_value, plot_name, plot_value, params,
    inc_groups, policies)

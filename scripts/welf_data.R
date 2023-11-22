@@ -125,6 +125,10 @@ welf_output = foreach(
       "/",
       simplify = T
     )[, 1]
+    welf = welf %>%
+      tibble::rownames_to_column(var = "CO2factor") %>%
+      arrange(desc(CO2factor))
+    welf$CO2factor = as.numeric(welf$CO2factor)
   }
   
   # name welfare effects data frame
