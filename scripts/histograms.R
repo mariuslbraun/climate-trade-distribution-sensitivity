@@ -25,7 +25,7 @@ rm(list = ls())
 # set random seed
 set.seed(127)
 
-# create elasticity, policy and income group names
+# create elasticity, policy and income group name vectors
 params = c(
   #"esubd",
   #"esubm",
@@ -35,6 +35,10 @@ params = c(
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
+# minimum CO2 target
+min_CO2factor = 0.87
+
+# load data frames and create plots
 for(i in 1:length(params)) {
   # load welfare effects data frame
   welf_name = paste("welf", params[i], sep = "_")
@@ -86,7 +90,7 @@ for(i in 1:length(params)) {
             color = "#36638B",
             linewidth = 1
           ) +
-          scale_x_reverse(limits = c(NA, 0.8)) +
+          scale_x_reverse(limits = c(NA, min_CO2factor)) +
           # label axes
           labs(
             x = "CO2 target",
