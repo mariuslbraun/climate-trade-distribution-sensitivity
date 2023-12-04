@@ -30,7 +30,8 @@ params = c(
   #"esubd",
   #"esubm",
   #"esubva",
-  "CO2factor"
+  "CO2factor",
+  "esub_cons"
 )
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
@@ -76,27 +77,42 @@ for(i in 1:length(params)) {
       )
 
       # if parameter is CO2factor: create line plot
-      if(params[i] == "CO2factor") {
+      if(params[i] == "CO2factor" |
+         params[i] == "esub_cons") {
         plot_value = ggplot(
           data = get(welf_name)
         ) +
           # line plot
           geom_line(
             aes(
-              x = CO2factor,
+              x = (get(welf_name))[params[i]][, ],
               y = welf_effect[, ],
               group = 1
             ),
             color = "#36638B",
             linewidth = 1
-          ) +
-          scale_x_reverse(limits = c(NA, min_CO2factor)) +
+          )
+          # if parameter is CO2factor: cut x-axis off at 0.87 (model does not solve for lower values)
+          if(params[i] == "CO2factor") {
+            plot_value = plot_value +
+              scale_x_reverse(
+                limits = c(
+                  NA,
+                  min_CO2factor
+                )
+              )
+          }
           # label axes
-          labs(
-            x = "CO2 target",
-            y = "Welfare change / %"
-          ) +
-          theme_minimal(base_size = 18.5)
+          plot_value = plot_value +
+            labs(
+              x = ifelse(
+                params[i] == "CO2factor",
+                yes = "CO2 target",
+                no = "Elasiticity of substitution in consumption"
+              ),
+              y = "Welfare change / %"
+            ) +
+            theme_minimal(base_size = 18.5)
       } else { # else: create histogram with mean and 95% confidence intervals
         # compute bootstrap 95% confidence intervals
         ci_value = ci_mean(

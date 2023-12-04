@@ -1,7 +1,7 @@
 # This R code extracts welfare effects from the output files of the
 # distributional sensitivity analysis of the main results of Hübler
 # et al. (2022). Welfare effects are then stored in a separate data
-# frame for esubd(i), esubm(i) and esubva(j) and saved in RDS files
+# frame for each set of parameters considered and saved in RDS files
 # to be used in subsequent analyses.
 
 # load packages
@@ -31,7 +31,8 @@ params = c(
   # "esubd",
   # "esubm",
   # "esubva",
-  "CO2factor"
+  "CO2factor",
+  "esub_cons"
 )
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
@@ -114,8 +115,10 @@ welf_output = foreach(
     welf[f, ] = t(as.numeric(welfare$X4))
   }
 
-  # if parameter is CO2factor: name rows according to CO2 target
-  if(params[param] == "CO2factor") {
+  # if parameter is CO2factor or esub_cons: name rows according to parameter value
+  if(params[param] == "CO2factor" |
+     params[param] == "esub_cons") {
+    # extract parameter value from file path
     rownames(welf) = str_split(
       str_split(
         filenames$files,
@@ -125,10 +128,10 @@ welf_output = foreach(
       "/",
       simplify = T
     )[, 1]
+    # add parameter value to data frame and convert to numeric
     welf = welf %>%
-      tibble::rownames_to_column(var = "CO2factor") %>%
-      arrange(desc(CO2factor))
-    welf$CO2factor = as.numeric(welf$CO2factor)
+      tibble::rownames_to_column(var = params[param]) %>%
+      mutate_if(is.character, as.numeric)
   }
   
   # name welfare effects data frame
