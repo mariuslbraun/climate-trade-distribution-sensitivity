@@ -25,14 +25,8 @@ rm(list = ls())
 # set random seed
 set.seed(127)
 
-# create elasticity, policy and income group name vectors
-params = c(
-  #"esubd",
-  #"esubm",
-  #"esubva",
-  "CO2factor",
-  "esub_cons"
-)
+# create parameter, policy and income group name vectors
+params = readRDS("interim/params.rds")
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 

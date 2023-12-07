@@ -23,17 +23,19 @@ library(parallel)
 rm(list = ls())
 
 # this is where you put the output files from the sensitivity analysis
-# (use separate subdirectories for esubd(i), esubm(i), and esubva(j))
+# (use separate subdirectories for each set of parameters)
 dir = "C:/Users/Marius Braun/output_sensitivity"
 
-# string vectors for parameter, policy and income group names
-params = c(
-  # "esubd",
-  # "esubm",
-  # "esubva",
-  "CO2factor",
-  "esub_cons"
-)
+# string vector for parameter names based on subdirectory names
+params = str_split(
+  list.dirs(dir, recursive = FALSE),
+  "output_sensitivity/",
+  simplify = T
+)[, 2]
+# save parameter name vector
+saveRDS(params, "interim/params.rds")
+
+# string vectors for policy scenario and income group names
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
