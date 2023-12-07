@@ -66,7 +66,12 @@ for(i in 1:length(params)) {
       welf_effect = (get(welf_name))[welf_effect_name]
       
       # if parameter is CO2factor: line plot, else histogram
-      plot_type = ifelse(params[i] == "CO2factor", "plot", "hist")
+      plot_type = ifelse(
+        params[i] == "CO2factor" |
+        params[i] == "esub_cons",
+        yes = "plot",
+        no = "hist"
+      )
       
       # create plot name
       plot_name = paste(
