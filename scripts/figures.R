@@ -30,6 +30,9 @@ params = readRDS("interim/params.rds")
 policies = c("policy", "cbam")
 inc_groups = c("lo", "mi", "hi")
 
+# specify file types that figures should be saved as
+filetypes = c(".pdf", ".png")
+
 # minimum CO2 target
 min_CO2factor = 0.87
 
@@ -165,19 +168,21 @@ for(i in 1:length(params)) {
             linewidth = 1
           ) +
           theme_minimal(base_size = 18.5)
+          rm(ci_value)
       }
 
-      # save histogram as PDF
-      ggsave(
-        file.path(
-          "figures",
-          params[i],
-          paste0(plot_name, ".pdf")
+      # save histogram as PDF and PNG
+      for(l in 1:length(filetypes)) {
+        ggsave(
+          file.path(
+            "figures",
+            params[i],
+            paste0(plot_name, filetypes[l])
+          )
         )
-      )
+      }
     }
   }
 }
 rm(i, j, k, welf_effect_name, welf_effect, welf_name,
-   ci_value, plot_name, plot_value, params,
-   inc_groups, policies)
+   plot_name, plot_value, params, inc_groups, policies)
