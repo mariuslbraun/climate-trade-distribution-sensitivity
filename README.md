@@ -80,17 +80,19 @@ Importantly, pay attention to where you store the output files, as the file path
 C:/Users/Marius Braun/output_sensitivity/esubm/mAGR=2.5/mCOA=10.118/mCRU=8.152/mNGA=7.421/mPET=10.028/mFOO=3.602/mMIN=2.425/mPAP=4.883/mCHE=4.121/mNMM=5.963/mIRS=4.577/mNFM=4.14/mMAN=4.897/mELE=18.928/mTRN=6.544/mCON=14.747/mSER=5.913/output.xlsx
 ```
 
-Depending on the file path of the directory that they are stored in, the file path length may exceed the file path length limit of 255 characters. If the file path length of the subdirectories exceeds this limit, you will not be able to read the output files in R.
+Depending on the file path of the directory that they are stored in, the file path length may exceed the file path length limit of 255 characters. If the file path length of the subdirectories exceeds this limit, you will not be able to read the output files into R.
 
 ## 4. Histograms
 
-[histograms.R](scripts/histograms.R) produces histograms of the distributions of welfare effects by policy scenario and income group for each parameter set. As an example, the following figure shows the distributions of welfare effects of *Domestic CO2 price* for varying Armington elasticities ``esubm``. Kernel density estimations are indicated by solid blue lines, and dashed vertical black lines represent 95% confidence intervals obtained via percentile bootstrapping.
+[figures.R](scripts/figures.R) produces histograms of the distributions of welfare effects by policy scenario and income group for each parameter set. As an example, the following figure shows the distributions of welfare effects of *Domestic CO2 price* for varying Armington elasticities ``esubm``. Kernel density estimations are indicated by solid blue lines, and dashed vertical black lines represent 95% confidence intervals obtained via percentile bootstrapping.
 
 |Low-income|Middle-income|High-income|
 |-----|-----|-----|
 |![hist_esubm_policy_lo](figures/esubm/hist_esubm_policy_lo.png)|![hist_esubm_policy_mi](figures/esubm/hist_esubm_policy_mi.png)|![hist_esubm_policy_hi](figures/esubm/hist_esubm_policy_hi.png)|
 
 Analogously, histograms of welfare effects by policy scenario and income group are produced for ``esubd`` and ``esubva``.
+
+In addition, figures plotting welfare effects as a function of the CO2 target ``CO2factor`` as well as the elasticity of substitution in consumption ``esub_cons`` are produced.
 
 ## References
 Aguiar, A., M. Chepeliev, E.L. Corong, R. McDougall and D. van der Mensbrugghe (2019). The GTAP data base: version 10. *Journal of Global Economic Analysis* 4, 1–27. [https://doi.org/10.21642/JGEA.040101AF](https://doi.org/10.21642/JGEA.040101AF)
