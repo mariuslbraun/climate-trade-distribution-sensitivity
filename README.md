@@ -1,4 +1,4 @@
-# CGE model sensitivity analysis for Hübler et al. (2022)
+# CGE model sensitivity analysis for Hübler et al. (2024)
 
 This repo contains R code for the sensitivity analysis of the computable general equilibrium (CGE) model developed in Hübler et al. (2022). Using household data from the German Income and Expenditure Survey, we analyze distributional effects of climate policy 
 in Germany in a CGE model calibrated to GTAP 10 data (Aguiar et al. 2019). We find that the negative consumption effect of CO2 pricing is highest for the low-income group, whereas the negative income effect is highest for the high-income group and exceeds
@@ -20,9 +20,9 @@ to load the CRAN snapshot from RStudio Package Manager. This will freeze to the 
 
 2. Install `renv` by calling `install.packages("renv")`.
 
-3. Call `renv::init()` to initialize a new project-local environment with a private R library.
+3. Call `renv::restore()` to restore the required dependencies as specified in the [renv.lock](renv.lock) file.
 
-4. Call `renv::restore()` to restore the required dependencies as specified in the [renv.lock](renv.lock) file.
+To run the entire analysis at once, run the [`run_all.R`](run_all.R) script file.
 
 ## 2. Generating parameter spaces
 
@@ -93,7 +93,6 @@ Aguiar, A., M. Chepeliev, E.L. Corong, R. McDougall and D. van der Mensbrugghe (
 
 Bussieck, M. R. and A. Meeraus (2004), General Algebraic Modeling System (GAMS), in: Kallrath, J. (ed.), *Modeling Languages in Mathematical Optimization*, p. 137–157, Springer US, Boston, MA. [https://doi.org/10.1007/978-1-4613-0215-5_8](https://doi.org/10.1007/978-1-4613-0215-5_8)
 
-Hübler, M., M. Wiese, M. Braun and J. Damster (2022), The distributional effects of CO2 pricing at home and at the border on
-German income groups, ROCHADE Working Paper. [https://rochade-project.org/de/Assets/documents/2022-09-29_huebler-wiese_distributional-effects-of-german-co2-pricing.pdf](https://rochade-project.org/de/Assets/documents/2022-09-29_huebler-wiese_distributional-effects-of-german-co2-pricing.pdf)
+Hübler, M., M. Wiese, M. Braun and J. Damster (2024), The distributional effects of CO2 pricing at home and at the border on German income groups, *Resource and Energy Economics* 77, 101435. [https://doi.org/10.1016/j.reseneeco.2024.101435](https://doi.org/10.1016/j.reseneeco.2024.101435)
 
 Pothen, F. and M. Hübler (2018), The interaction of climate and trade policy, *European Economic Review* 107, 1-26. [https://doi.org/10.1016/j.euroecorev.2018.04.004](https://doi.org/10.1016/j.euroecorev.2018.04.004)
