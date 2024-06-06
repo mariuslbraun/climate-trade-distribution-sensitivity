@@ -20,7 +20,9 @@ to load the CRAN snapshot from RStudio Package Manager. This will freeze to the 
 
 2. Install `renv` by calling `install.packages("renv")`.
 
-3. Call `renv::restore()` to restore the required dependencies as specified in the [renv.lock](renv.lock) file.
+3. Call `renv::init(bare = TRUE)`to initialize the renv library.
+
+4. Call `renv::restore()` to restore the required dependencies as specified in the [renv.lock](renv.lock) file.
 
 To run the entire analysis at once, run the [`run_all.R`](run_all.R) script file.
 
